@@ -25,6 +25,11 @@ const roomTypeSchema = new Schema(
     },
     totalRoom: {
       type: Number,
+      default: 0,
+    },
+    addedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   { timestamps: true }
