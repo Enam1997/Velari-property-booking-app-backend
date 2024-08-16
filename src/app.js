@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { User } from "../src/models/user.model.js";
+import { Property } from "../src/models/property.modal.js";
 
 const app = express();
 
@@ -50,6 +51,40 @@ app.get("/create", (req, res) => {
   )
     .then(() => {
       res.send("User Created");
+    })
+    .catch((err) => {
+      console.log(err);
+
+      res.send(err);
+    });
+});
+
+const createPropertyTest = async (
+  propertyName,
+  propertyType,
+  email,
+  phoneNumber,
+  roomTypes,
+) => {
+  const user = await Property.create({
+    propertyName,
+    propertyType,
+    email,
+    phoneNumber,
+    roomTypes
+  });
+};
+
+app.get("/property", (req, res) => {
+  createPropertyTest(
+    "Abesh Thikana",
+    "Hotel",
+    "mdenamaahhowdhuy@gmail.com",
+    "01",
+    {roomTypeName:"Luxury"}
+  )
+    .then(() => {
+      res.send("Propert Created Perfectly");
     })
     .catch((err) => {
       console.log(err);
