@@ -2,12 +2,12 @@ import mongoose, { Schema } from "mongoose";
 
 const bookingRoomItemSchema = new Schema({
   roomType: {
-    type: String,  // Reference the roomTypeName from Property schema
+    type: String, // Reference the roomTypeName from Property schema
     required: true,
   },
   roomTypeId: {
     type: Schema.Types.ObjectId,
-    ref: 'Property.roomTypes',
+    ref: "Property.roomTypes",
     required: true,
   },
   quantity: {
@@ -22,7 +22,7 @@ const bookingRoomItemSchema = new Schema({
   totalRoomPrice: {
     type: Number,
     required: true,
-  }
+  },
 });
 
 const bookingSchema = new Schema(
@@ -45,14 +45,18 @@ const bookingSchema = new Schema(
       type: Date,
       required: true,
     },
-    bookedRooms: [bookingRoomItemSchema], // Array of booked rooms
+    bookedRooms: [bookingRoomItemSchema],
     totalAmount: {
       type: Number,
       required: true,
     },
+    payment: {
+      type: Schema.Types.ObjectId,
+      ref: "Payment",
+    },
     status: {
       type: String,
-      enum: ["Booked", "Cancelled", "Completed"],
+      enum: ["Booked", "CheckedIn", "Cancelled", "Completed"],
       default: "Booked",
     },
   },
