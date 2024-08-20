@@ -93,7 +93,13 @@ const propertySchema = new Schema(
     minimumRoomPrice: {
       type: Number,
     },
+    maximumRoomPrice: {
+      type: Number,
+    },
     details: {
+      type: String,
+    },
+    location: {
       type: String,
     },
   },

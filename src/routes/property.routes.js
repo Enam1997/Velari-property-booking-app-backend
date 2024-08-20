@@ -1,8 +1,14 @@
 import { Router } from "express";
-import { getAllProperties } from "../controllers/property.controller.js";
+import {
+  addProperty,
+  getAllProperties,
+} from "../controllers/property.controller.js";
 
 const router = Router();
 
 router.route("/get-all-properties").get(getAllProperties);
+
+// This is only for testing
+router.route("/add-a-property").get(addProperty);
 
 export default router;
