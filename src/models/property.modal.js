@@ -77,11 +77,18 @@ const propertySchema = new Schema(
     amentites: {
       type: [String],
     },
+    view: {
+      type: [String],
+    },
     roomTypes: {
       type: [roomTypeSchema],
     },
     employee: {
       type: [employeSchema],
+    },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
     minimumRoomPrice: {
       type: Number,

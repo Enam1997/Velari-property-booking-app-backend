@@ -64,14 +64,14 @@ const createPropertyTest = async (
   propertyType,
   email,
   phoneNumber,
-  roomTypes,
+  roomTypes
 ) => {
   const user = await Property.create({
     propertyName,
     propertyType,
     email,
     phoneNumber,
-    roomTypes
+    roomTypes,
   });
 };
 
@@ -81,7 +81,7 @@ app.get("/property", (req, res) => {
     "Hotel",
     "mdenamaahhowdhuy@gmail.com",
     "01",
-    {roomTypeName:"Luxury"}
+    { roomTypeName: "Luxury" }
   )
     .then(() => {
       res.send("Propert Created Perfectly");
@@ -93,14 +93,14 @@ app.get("/property", (req, res) => {
     });
 });
 
-
-
 // Routes Import
 
 import userRouter from "./routes/user.routes.js";
+import propertyRouter from "./routes/property.routes.js";
 
 // routes declaration
 
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/property", propertyRouter);
 
 export { app };
