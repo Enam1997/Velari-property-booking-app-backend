@@ -1,4 +1,5 @@
 import { Property } from "../models/property.modal.js";
+import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandeler.js";
 
@@ -7,129 +8,185 @@ const getAllProperties = asyncHandler(async (req, res) => {
     const {
       searchString,
       view,
-      ParamHoteltype,
-      Paramlocation,
-      ParamBedRooms,
-      ParamIsGarage,
+      propertyType,
+      location,
+      totalRooms,
+      isGarage,
       minimumPrice,
       maximumPrice,
-      amenities,
+      amentites,
     } = req.query;
 
     // Building the query object based on provided query parameters
     let query = {};
 
+    // Search string logic to match across propertyName, location, and details
     if (searchString) {
-      query.propertyName = { $regex: searchString, $options: "i" };
+      query.$or = [
+        { propertyName: { $regex: searchString, $options: "i" } },
+        { location: { $regex: searchString, $options: "i" } },
+        { details: { $regex: searchString, $options: "i" } },
+      ];
     }
 
     if (view) {
       query.view = { $in: view.split(",") };
     }
 
-    if (ParamHoteltype) {
-      query.propertyType = ParamHoteltype;
+    if (propertyType) {
+      query.propertyType = propertyType;
     }
 
-    if (Paramlocation) {
-      query.location = { $regex: Paramlocation, $options: "i" };
+    if (location) {
+      query.location = { $regex: location, $options: "i" };
     }
 
-    if (ParamBedRooms) {
-      query["roomTypes.totalRoom"] = ParamBedRooms;
+    if (totalRooms) {
+      query["roomTypes.totalRoom"] = totalRooms;
     }
 
-    if (ParamIsGarage) {
-      query["roomTypes.garage"] = ParamIsGarage === "true";
+    if (isGarage) {
+      query.garage = isGarage === "true";
     }
 
-    if (minimumPrice) {
-      query.minimumRoomPrice = { $gte: minimumPrice };
+    // Handle price range
+    if (minimumPrice || maximumPrice) {
+      query.minimumRoomPrice = {};
+      if (minimumPrice) {
+        query.minimumRoomPrice.$gte = minimumPrice;
+      }
+      if (maximumPrice) {
+        query.minimumRoomPrice.$lte = maximumPrice;
+      }
     }
 
-    if (maximumPrice) {
-      query.maximumRoomPrice = query.minimumRoomPrice
-        ? { ...query.minimumRoomPrice, $lte: maximumPrice }
-        : { $lte: maximumPrice };
-    }
-
-    if (amenities) {
-      query.amentites = { $all: amenities.split(",") };
+    if (amentites) {
+      query.amentites = { $all: amentites.split(",") };
     }
 
     // Fetching the properties from the database
     const properties = await Property.find(query);
 
+    if (!properties || properties.length === 0) {
+      return res
+        .status(404)
+        .json(new ApiError(404, "No properties found matching the criteria"));
+    }
+
     res
       .status(200)
       .json(
-        new ApiResponse(200, properties, "All Properties Fetched Succesfully")
+        new ApiResponse(200, properties, "All Properties Fetched Successfully")
       );
   } catch (error) {
+    console.error("Error fetching properties:", error);
     res.status(500).json(new ApiError(500, error.message));
   }
 });
 
-const getAllPropertie = asyncHandler(async (req, res) => {
-  const properties = await Property.find();
-  console.log("Here Come Perfecly");
-  console.log(properties);
-
-  res
-    .status(200)
-    .json(
-      new ApiResponse(200, properties, "All Properties Fetched Succesfully")
-    );
-});
-
 const getPropertyDetails = asyncHandler(async (req, res) => {
-  const properties = await Property.find();
-  console.log("Here Come Perfecly");
-  console.log(properties);
+  try {
+    const { id } = req.query; // Getting the property id from the Query Parameter 
 
-  res
-    .status(200)
-    .json(
-      new ApiResponse(200, properties, "All Properties Fetched Succesfully")
-    );
+
+    // Find the property by ID
+    const property = await Property.findById(id);
+
+    // Check if the property exists
+    if (!property) {
+      return res.status(404).json(new ApiError(404, "Property not found"));
+    }
+
+    // Respond with the property details
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, property, "Property details fetched successfully")
+      );
+  } catch (error) {
+    console.error("Error fetching property details:", error);
+    res.status(500).json(new ApiError(500, error.message));
+  }
 });
 
-// Below methods are only for testing
+// Below methods are only for testing add property
 
 const createPropertyTest = async (
   propertyName,
   propertyType,
   email,
+  propertyImages,
   phoneNumber,
+  amentites,
+  view,
   roomTypes,
-  propertyImages
+  employee,
+  createdBy,
+  minimumRoomPrice,
+  maximumRoomPrice,
+  garage,
+  details,
+  location
 ) => {
   const property = await Property.create({
     propertyName,
     propertyType,
     email,
-    phoneNumber,
-    roomTypes,
     propertyImages,
+    phoneNumber,
+    amentites,
+    view,
+    roomTypes,
+    employee,
+    createdBy,
+    minimumRoomPrice,
+    maximumRoomPrice,
+    garage,
+    details,
+    location,
   });
 };
 
 const addProperty = asyncHandler(async (req, res) => {
+  const {
+    propertyName,
+    propertyType,
+    email,
+    propertyImages,
+    phoneNumber,
+    amentites,
+    view,
+    roomTypes,
+    employee,
+    createdBy,
+    minimumRoomPrice,
+    maximumRoomPrice,
+    garage,
+    details,
+    location,
+  } = req.query;
+
+  const roomTypesPars = JSON.parse(roomTypes);
+  const employeePars = JSON.parse(employee);
   console.log("**********************************");
   console.log("Start");
 
   createPropertyTest(
-    "rapa",
-    "Private House",
-    "rapa@gmail.com",
-    "01834803269",
-    {
-      roomTypeName: "Luxury",
-    },
-    [
-      "https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?cs=srgb&dl=pexels-pixabay-258154.jpg&fm=jpg",
-      "https://images.bubbleup.com/width1920/quality35/mville2017/1-brand/1-margaritaville.com/gallery-media/220803-compasshotel-medford-pool-73868-1677873697-78625-1694019828.jpg",
-    ]
+    propertyName,
+    propertyType,
+    email,
+    propertyImages,
+    phoneNumber,
+    amentites,
+    view,
+    roomTypesPars,
+    employeePars,
+    createdBy,
+    minimumRoomPrice,
+    maximumRoomPrice,
+    garage,
+    details,
+    location
   )
     .then(() => {
       res.send("Property Created Perfectly");
@@ -141,4 +198,4 @@ const addProperty = asyncHandler(async (req, res) => {
     });
 });
 
-export { getAllProperties, addProperty };
+export { getAllProperties, getPropertyDetails, addProperty };

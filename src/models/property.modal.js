@@ -96,6 +96,10 @@ const propertySchema = new Schema(
     maximumRoomPrice: {
       type: Number,
     },
+    garage: {
+      type: Boolean,
+      default: false,
+    },
     details: {
       type: String,
     },
