@@ -86,8 +86,7 @@ const getAllProperties = asyncHandler(async (req, res) => {
 
 const getPropertyDetails = asyncHandler(async (req, res) => {
   try {
-    const { id } = req.query; // Getting the property id from the Query Parameter 
-
+    const { id } = req.query; // Getting the property id from the Query Parameter
 
     // Find the property by ID
     const property = await Property.findById(id);
@@ -168,8 +167,6 @@ const addProperty = asyncHandler(async (req, res) => {
 
   const roomTypesPars = JSON.parse(roomTypes);
   const employeePars = JSON.parse(employee);
-  console.log("**********************************");
-  console.log("Start");
 
   createPropertyTest(
     propertyName,
@@ -198,4 +195,73 @@ const addProperty = asyncHandler(async (req, res) => {
     });
 });
 
-export { getAllProperties, getPropertyDetails, addProperty };
+// Below methodsFor Adding Room Test
+
+const addRoom = asyncHandler(async (req, res) => {
+  try {
+    const {
+      propertyId,
+      roomTypeName,
+      roomTypeImages,
+      price,
+      discountPrice,
+      balcony,
+      breakfast,
+      totalRoom,
+      addedBy,
+    } = req.body;
+
+    // Find the property by ID
+    const property = await Property.findById(propertyId);
+
+    // Check if the property exists
+    if (!property) {
+      return res.status(404).json(new ApiError(404, "Property not found"));
+    }
+
+    // Create a new room object
+    const newRoom = {
+      roomTypeName,
+      roomTypeImages,
+      price,
+      discountPrice,
+      balcony,
+      breakfast,
+      totalRoom,
+      abailableRoom: totalRoom,
+      addedBy,
+    };
+
+    // Add the new room to the roomTypes array in the property
+    property.roomTypes.push(newRoom);
+
+    // Check and update the minimumRoomPrice if the discountPrice is lower
+    if (
+      !property.minimumRoomPrice ||
+      discountPrice < property.minimumRoomPrice
+    ) {
+      property.minimumRoomPrice = discountPrice;
+    }
+
+    // Check and update the maximumRoomPrice if the discountPrice is higher
+    if (
+      !property.maximumRoomPrice ||
+      discountPrice > property.maximumRoomPrice
+    ) {
+      property.maximumRoomPrice = discountPrice;
+    }
+
+    // Save the updated property
+    await property.save();
+
+    // Return success response
+    res
+      .status(200)
+      .json(new ApiResponse(200, property, "Room added successfully"));
+  } catch (error) {
+    console.error("Error adding room:", error);
+    res.status(500).json(new ApiError(500, error.message));
+  }
+});
+
+export { getAllProperties, getPropertyDetails, addProperty, addRoom };

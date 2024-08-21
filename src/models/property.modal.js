@@ -27,6 +27,9 @@ const roomTypeSchema = new Schema(
       type: Number,
       default: 0,
     },
+    abailableRoom:{
+      type:Number
+    },
     addedBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
