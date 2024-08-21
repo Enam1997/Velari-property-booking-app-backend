@@ -61,10 +61,12 @@ app.get("/create", (req, res) => {
 
 import userRouter from "./routes/user.routes.js";
 import propertyRouter from "./routes/property.routes.js";
+import bookingRouter from "./routes/booking.routes.js";
 
 // routes declaration
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/property", propertyRouter);
+app.use("/api/v1/booking", bookingRouter);
 
 export { app };
