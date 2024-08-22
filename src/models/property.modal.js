@@ -27,8 +27,8 @@ const roomTypeSchema = new Schema(
       type: Number,
       default: 0,
     },
-    abailableRoom:{
-      type:Number
+    abailableRoom: {
+      type: Number,
     },
     addedBy: {
       type: Schema.Types.ObjectId,
@@ -36,6 +36,16 @@ const roomTypeSchema = new Schema(
     },
   },
   { timestamps: true }
+);
+
+const propertyRulesSchema = new Schema(
+  {
+    rulesType: {
+      type: String,
+    },
+    rules: [String],
+  },
+  {}
 );
 
 const employeSchema = new Schema({
@@ -47,6 +57,24 @@ const employeSchema = new Schema({
     type: String,
   },
 });
+
+const reviewSchema = new Schema(
+  {
+    reviewer: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    reviewMessage: {
+      type: String,
+    },
+    reviewStar: {
+      type: Decimal128,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const propertySchema = new Schema(
   {
@@ -108,6 +136,16 @@ const propertySchema = new Schema(
     },
     location: {
       type: String,
+    },
+    proertyReviewCalculateStar: {
+      type: Decimal128,
+      default: 0,
+    },
+    propertyReviews: {
+      type: [reviewSchema],
+    },
+    propertyRules: {
+      type: [propertyRulesSchema],
     },
   },
   {
