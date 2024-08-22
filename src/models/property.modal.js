@@ -68,7 +68,7 @@ const reviewSchema = new Schema(
       type: String,
     },
     reviewStar: {
-      type: Decimal128,
+      type: Number,
     },
   },
   {
@@ -138,7 +138,7 @@ const propertySchema = new Schema(
       type: String,
     },
     proertyReviewCalculateStar: {
-      type: Decimal128,
+      type: Number,
       default: 0,
     },
     propertyReviews: {
