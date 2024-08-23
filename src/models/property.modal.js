@@ -76,6 +76,23 @@ const reviewSchema = new Schema(
   }
 );
 
+const spotSchema = new Schema(
+  {
+    name: {
+      type: String,
+    },
+    distance: String,
+  },
+  {}
+);
+
+const newrbySpotSchema = new Schema({
+  name: {
+    type: String,
+  },
+  list: [spotSchema],
+});
+
 const propertySchema = new Schema(
   {
     propertyName: {
@@ -147,6 +164,7 @@ const propertySchema = new Schema(
     propertyRules: {
       type: [propertyRulesSchema],
     },
+    nearbySpots: [newrbySpotSchema],
   },
   {
     timestamps: true,
