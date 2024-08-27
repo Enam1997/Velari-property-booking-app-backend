@@ -42,6 +42,14 @@ const roomTypeSchema = new Schema(
       type: Number,
       default: 0,
     },
+    amentites: [
+      {
+        amentitesType: {
+          type: String,
+        },
+        amentites: [String],
+      },
+    ],
     addedBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
