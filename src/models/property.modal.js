@@ -30,6 +30,18 @@ const roomTypeSchema = new Schema(
     abailableRoom: {
       type: Number,
     },
+    roomSize: {
+      type: Number,
+      default: 0,
+    },
+    canSleep: {
+      type: Number,
+      default: 0,
+    },
+    bedCount: {
+      type: Number,
+      default: 0,
+    },
     addedBy: {
       type: Schema.Types.ObjectId,
       ref: "User",

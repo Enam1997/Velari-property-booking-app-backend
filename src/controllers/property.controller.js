@@ -209,6 +209,9 @@ const addRoom = asyncHandler(async (req, res) => {
       breakfast,
       totalRoom,
       addedBy,
+      roomSize,
+      canSleep,
+      bedCount,
     } = req.body;
 
     // Find the property by ID
@@ -230,6 +233,9 @@ const addRoom = asyncHandler(async (req, res) => {
       totalRoom,
       abailableRoom: totalRoom,
       addedBy,
+      roomSize,
+      canSleep,
+      bedCount,
     };
 
     // Add the new room to the roomTypes array in the property
