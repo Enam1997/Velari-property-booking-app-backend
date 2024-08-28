@@ -84,8 +84,6 @@ const createBooking = asyncHandler(async (req, res) => {
     // Save the booking
     await booking.save();
 
-    console.log(result);
-
     res
       .status(201)
       .json(new ApiResponse(201, booking, "Booking created successfully"));
